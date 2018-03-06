@@ -23,7 +23,7 @@ public class AppLogic implements ILogic
         return null;
     }
 
-    private void generateTree(String source)
+    private Node generateTree(String source)
     {
         HashMap<Character, Integer> characterFrequency = new HashMap<>();
         for (int i = 0; i < source.length(); i++)
@@ -56,9 +56,11 @@ public class AppLogic implements ILogic
             // Remove 2 nodes with the lowest frequency
             Node child1 = sortedFrequencyQueue.poll();
             Node child2 = sortedFrequencyQueue.poll();
-            Node Paranet = new Node(new Node[] {child1, child2}, child1.getFrequency() + child2.getFrequency());
+            Node Paranet = new Node(child1, child2, child1.getFrequency() + child2.getFrequency());
 
             sortedFrequencyQueue.add(Paranet);
         }
+
+        return sortedFrequencyQueue.poll();
     }
 }

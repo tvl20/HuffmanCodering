@@ -5,7 +5,8 @@ import java.util.Arrays;
 public class Node implements Comparable<Node>
 {
     private char key;
-    private Node[] children;
+    private Node leftChild;
+    private Node rightChild;
     private int frequency;
 
     public char getKey()
@@ -13,9 +14,14 @@ public class Node implements Comparable<Node>
         return key;
     }
 
-    public Node[] getChildren()
+    public Node getLeftChild()
     {
-        return children;
+        return leftChild;
+    }
+
+    public Node getRightChild()
+    {
+        return rightChild;
     }
 
     public int getFrequency()
@@ -26,14 +32,16 @@ public class Node implements Comparable<Node>
     public Node(char key, int frequency)
     {
         this.key = key;
-        this.children = null;
+        this.leftChild = null;
+        this.rightChild = null;
         this.frequency = frequency;
     }
 
-    public Node(Node[] children, int frequency)
+    public Node(Node leftChild, Node rightChild, int frequency)
     {
         this.key = '\u0000';
-        this.children = children;
+        this.leftChild = leftChild;
+        this.rightChild = rightChild;
         this.frequency = frequency;
     }
 

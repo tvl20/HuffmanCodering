@@ -3,6 +3,8 @@ package com.gui;
 import com.logic.AppLogic;
 import com.logic.ILogic;
 
+import java.util.BitSet;
+
 public class Main
 {
     private static final String DEFAULT_TEXT = "Een, twee, drie, vier\n" +
@@ -34,6 +36,7 @@ public class Main
         Main application = new Main();
         application.logic = new AppLogic();
 
+        /*
         System.out.println("Original text:");
         System.out.println(DEFAULT_TEXT + LINE_SEPERATER);
 
@@ -44,5 +47,6 @@ public class Main
         System.out.println("Decoded: ");
         String decodedText = application.logic.decode(encodedText);
         System.out.println(decodedText + LINE_SEPERATER);
+        */
     }
 }
