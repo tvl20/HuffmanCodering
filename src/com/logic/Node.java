@@ -1,7 +1,6 @@
 package com.logic;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 public class Node implements Comparable<Node>, Serializable
 {
