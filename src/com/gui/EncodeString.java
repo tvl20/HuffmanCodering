@@ -3,9 +3,7 @@ package com.gui;
 import com.logic.AppLogic;
 import com.logic.ILogic;
 
-import java.util.BitSet;
-
-public class Main
+public class EncodeString
 {
     private static final String DEFAULT_TEXT = "Een, twee, drie, vier\n" +
             "Hoedje van, hoedje van\n" +
@@ -33,20 +31,13 @@ public class Main
 
     public static void main(String[] args)
     {
-        Main application = new Main();
+        EncodeString application = new EncodeString();
         application.logic = new AppLogic();
 
-        /*
         System.out.println("Original text:");
         System.out.println(DEFAULT_TEXT + LINE_SEPERATER);
 
         System.out.println("Encoded:");
-        String encodedText = application.logic.encode(DEFAULT_TEXT);
-        System.out.println(encodedText + LINE_SEPERATER);
-
-        System.out.println("Decoded: ");
-        String decodedText = application.logic.decode(encodedText);
-        System.out.println(decodedText + LINE_SEPERATER);
-        */
+        application.logic.encode(DEFAULT_TEXT);
     }
 }

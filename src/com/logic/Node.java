@@ -1,18 +1,25 @@
 package com.logic;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class Node implements Comparable<Node>
+public class Node implements Comparable<Node>, Serializable
 {
-    private char key;
-    private Node leftChild;
-    private Node rightChild;
+    private char key = '\u0000';
+
+    // Introduced a new variable because (key != '\u0000') was acting weird
+    private boolean gotKey = false;
+
+    private Node leftChild = null;
+    private Node rightChild = null;
     private int frequency;
 
     public char getKey()
     {
         return key;
     }
+
+    public boolean hasKey() { return gotKey; }
 
     public Node getLeftChild()
     {
@@ -32,14 +39,12 @@ public class Node implements Comparable<Node>
     public Node(char key, int frequency)
     {
         this.key = key;
-        this.leftChild = null;
-        this.rightChild = null;
+        this.gotKey = true;
         this.frequency = frequency;
     }
 
     public Node(Node leftChild, Node rightChild, int frequency)
     {
-        this.key = '\u0000';
         this.leftChild = leftChild;
         this.rightChild = rightChild;
         this.frequency = frequency;
@@ -48,6 +53,6 @@ public class Node implements Comparable<Node>
     @Override
     public int compareTo(Node o)
     {
-        return Integer.compare(o.getFrequency(), this.getFrequency());
+        return Integer.compare(this.getFrequency(), o.getFrequency());
     }
 }
