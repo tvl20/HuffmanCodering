@@ -9,8 +9,22 @@ public class AppLogic implements ILogic
     private HashMap<Character, String> bitCodeLookupTable = null;
 
     @Override
-    public void encode(String input)
+    public void encode(String input, File outputFile)
     {
+        try
+        {
+            if (!outputFile.exists() && !outputFile.createNewFile())
+            {
+                System.out.println("Output file doesn't exist and could not be created");
+                return;
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return;
+        }
+
         if (codeTree == null)
         {
             codeTree = generateTree(input);
@@ -19,13 +33,19 @@ public class AppLogic implements ILogic
 
         BitSet encodedMessage = encodeMessage(bitCodeLookupTable, input);
         System.out.println(encodedMessage.toString());
-        writeToFile(encodedMessage);
+        writeToFile(encodedMessage, outputFile);
     }
 
     @Override
-    public String decode()
+    public String decode(File inputFile)
     {
-        BitSet encodedMessage = readFromFile();
+        if (!inputFile.exists())
+        {
+            System.out.println("Input file doesn't exist");
+            return "";
+        }
+
+        BitSet encodedMessage = readFromFile(inputFile);
         return decodeMessage(encodedMessage);
     }
 
@@ -116,16 +136,14 @@ public class AppLogic implements ILogic
         return output;
     }
 
-    private void writeToFile(BitSet encodedText)
+    private void writeToFile(BitSet encodedText, File outputFile)
     {
         if (codeTree == null)
         {
             return;
         }
 
-        File huffmanFile = new File("huffman.txt");
-
-        try (FileOutputStream fos = new FileOutputStream(huffmanFile);
+        try (FileOutputStream fos = new FileOutputStream(outputFile);
              ObjectOutputStream oos = new ObjectOutputStream(fos))
         {
             oos.writeObject(codeTree);
@@ -167,13 +185,12 @@ public class AppLogic implements ILogic
         return output.toString();
     }
 
-    private BitSet readFromFile()
+    private BitSet readFromFile(File inputFile)
     {
-        File huffmanFile = new File("huffman.txt");
         BitSet output = null;
 
         // TODO: MAKE USE OF THE SAME STREAM?
-        try (FileInputStream fis = new FileInputStream(huffmanFile);
+        try (FileInputStream fis = new FileInputStream(inputFile);
              ObjectInputStream ois = new ObjectInputStream(fis))
         {
             codeTree = (Node) ois.readObject();

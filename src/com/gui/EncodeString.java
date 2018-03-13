@@ -3,6 +3,9 @@ package com.gui;
 import com.logic.AppLogic;
 import com.logic.ILogic;
 
+import java.io.File;
+import java.io.IOException;
+
 public class EncodeString
 {
     private static final String DEFAULT_TEXT = "Een, twee, drie, vier\n" +
@@ -37,7 +40,8 @@ public class EncodeString
         System.out.println("Original text:");
         System.out.println(DEFAULT_TEXT + LINE_SEPERATER);
 
+        File outputFile = new File("src/huffmanFile.txt");
         System.out.println("Encoded:");
-        application.logic.encode(DEFAULT_TEXT);
+        application.logic.encode(DEFAULT_TEXT, outputFile);
     }
 }
