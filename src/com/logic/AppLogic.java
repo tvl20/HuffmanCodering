@@ -13,10 +13,15 @@ public class AppLogic implements ILogic
     {
         try
         {
-            if (!outputFile.exists() && !outputFile.createNewFile())
+            if (!outputFile.exists())
             {
-                System.out.println("Output file doesn't exist and could not be created");
-                return;
+                System.out.println("Output file doesn't exist");
+
+                if (!outputFile.createNewFile())
+                {
+                    System.out.println("Output file could not be created, exit program");
+                    return;
+                }
             }
         }
         catch (IOException e)
@@ -25,11 +30,8 @@ public class AppLogic implements ILogic
             return;
         }
 
-        if (codeTree == null)
-        {
-            codeTree = generateTree(input);
-            bitCodeLookupTable = generateBitCodeLookupTable(codeTree);
-        }
+        codeTree = generateTree(input);
+        bitCodeLookupTable = generateBitCodeLookupTable(codeTree);
 
         BitSet encodedMessage = encodeMessage(bitCodeLookupTable, input);
         System.out.println(encodedMessage.toString());
@@ -49,25 +51,28 @@ public class AppLogic implements ILogic
         return decodeMessage(encodedMessage);
     }
 
-    private Node generateTree(String source)
+    private HashMap<Character, Integer> getCharacterFrequency(String input)
     {
-        HashMap<Character, Integer> characterFrequency = new HashMap<>();
-        for (int i = 0; i < source.length(); i++)
+        HashMap<Character, Integer> frequencyMap = new HashMap<>();
+        for (int i = 0; i < input.length(); i++)
         {
-            char currentCharacter = source.charAt(i);
+            char currentCharacter = input.charAt(i);
 
-            if (characterFrequency.containsKey(currentCharacter))
+            if (frequencyMap.containsKey(currentCharacter))
             {
-                int frequency = characterFrequency.get(currentCharacter) + 1;
-                characterFrequency.replace(currentCharacter, frequency);
+                int frequency = frequencyMap.get(currentCharacter) + 1;
+                frequencyMap.replace(currentCharacter, frequency);
             }
             else
             {
-                characterFrequency.put(currentCharacter, 1);
+                frequencyMap.put(currentCharacter, 1);
             }
         }
+        return frequencyMap;
+    }
 
-
+    private PriorityQueue<Node> getPriorityQueue(HashMap<Character, Integer> characterFrequency)
+    {
         Set<Map.Entry<Character, Integer>> allCharacters = characterFrequency.entrySet();
         PriorityQueue<Node> sortedFrequencyQueue = new PriorityQueue<>();
 
@@ -76,7 +81,11 @@ public class AppLogic implements ILogic
             sortedFrequencyQueue.add(new Node(character.getKey(), character.getValue()));
         }
 
+        return sortedFrequencyQueue;
+    }
 
+    private Node buildTree(PriorityQueue<Node> sortedFrequencyQueue)
+    {
         while (sortedFrequencyQueue.size() != 1)
         {
             // Remove 2 nodes with the lowest frequency
@@ -88,6 +97,14 @@ public class AppLogic implements ILogic
         }
 
         return sortedFrequencyQueue.poll();
+    }
+
+    private Node generateTree(String source)
+    {
+        HashMap<Character, Integer> characterFrequency = getCharacterFrequency(source);
+        PriorityQueue<Node> sortedFrequencyQueue = getPriorityQueue(characterFrequency);
+        Node treeBase = buildTree(sortedFrequencyQueue);
+        return treeBase;
     }
 
     private HashMap<Character, String> generateBitCodeLookupTable(Node root)
@@ -163,13 +180,13 @@ public class AppLogic implements ILogic
         }
 
         StringBuilder output = new StringBuilder();
-        for (int i = 0; i < encodedMessage.length() -1;)
+        for (int i = 0; i < encodedMessage.length() - 1; )
         {
             Node node = codeTree;
 
-            while(!node.hasKey())
+            while (!node.hasKey())
             {
-                if(encodedMessage.get(i))
+                if (encodedMessage.get(i))
                 {
                     node = node.getRightChild();
                 }
