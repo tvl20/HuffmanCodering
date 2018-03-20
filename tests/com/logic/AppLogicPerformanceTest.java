@@ -35,8 +35,8 @@ class AppLogicPerformanceTest
             if (performanceTestFile1.exists())
             {
                 performanceTestFile1.delete();
-                performanceTestFile1.createNewFile();
             }
+            performanceTestFile1.createNewFile();
 
             if (performanceTestFile2.exists())
             {
@@ -49,51 +49,43 @@ class AppLogicPerformanceTest
         }
     }
 
-    @BeforeEach
-    void beforeEach()
+    @Test
+    void performaceTestPreexistingFile()
     {
+        encodeDecodeTest(10000, performanceTestFile1);
+        encodeDecodeTest(1000000, performanceTestFile1);
+    }
+
+    @Test
+    void performaceTestNoPreexistingFile()
+    {
+        encodeDecodeTest(10000, performanceTestFile2);
+        encodeDecodeTest(1000000, performanceTestFile2);
+    }
+
+    private void encodeDecodeTest(int numberOfCharacters, File testFile)
+    {
+        String testString = generateTestString(numberOfCharacters);
+
         logic = new AppLogic();
-    }
 
-    @Test
-    void encode()
-    {
-        testString1 = generateTestString(10000);
-        testString2 = generateTestString(1000000);
-
-        System.out.println("10k: ");
+        System.out.println("Encoding " + numberOfCharacters + ": ");
         long startTime = System.currentTimeMillis();
-        logic.encode(testString1, performanceTestFile1);
-        visualise(10000, startTime);
+        logic.encode(testString, testFile);
+        visualise(numberOfCharacters, startTime);
         System.out.println(LINE_SEPERATOR);
 
-        System.out.println("1m: ");
+
+        logic = new AppLogic();
+
+        System.out.println("Decoding " + numberOfCharacters + ": ");
         startTime = System.currentTimeMillis();
-        logic.encode(testString2, performanceTestFile2);
-        visualise(1000000, startTime);
-        System.out.println(LINE_SEPERATOR);
-    }
-
-    // I added 'zz' in front of the function name so that the other test will be run before this one.
-    // Because tests are run alphabetically.
-    @Test
-    void zzdecode()
-    {
-        System.out.println("10k: ");
-        long startTime = System.currentTimeMillis();
-        String resultString1 = logic.decode(performanceTestFile1);
-        visualise(10000, startTime);
+        String resultString = logic.decode(testFile);
+        visualise(numberOfCharacters, startTime);
         System.out.println(LINE_SEPERATOR);
 
-        Assert.assertTrue("Test string 1 doesn't match the result.", resultString1.equals(testString1));
 
-        System.out.println("1m: ");
-        startTime = System.currentTimeMillis();
-        String resultString2 = logic.decode(performanceTestFile2);
-        visualise(1000000, startTime);
-        System.out.println(LINE_SEPERATOR);
-
-        Assert.assertTrue("Test string 2 doesn't match the result.", resultString2.equals(testString2));
+        Assert.assertTrue("Test string doesn't match the result.", resultString.equals(testString));
     }
 
     private void visualise(int grootte, long start)

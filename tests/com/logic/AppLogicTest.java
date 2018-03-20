@@ -34,8 +34,8 @@ class AppLogicTest
             if (testFile1.exists())
             {
                 testFile1.delete();
-                testFile1.createNewFile();
             }
+            testFile1.createNewFile();
 
             if (testFile2.exists())
             {
@@ -48,29 +48,27 @@ class AppLogicTest
         }
     }
 
-    @BeforeEach
-    void beforeEach()
+    @Test
+    void preexistingFileTest()
+    {
+        System.out.println(testFile1);
+        encodeDecodeTest(testString1, testFile1);
+    }
+
+    @Test
+    void noPreexistingFileTest()
+    {
+        System.out.println(testFile2);
+        encodeDecodeTest(testString2, testFile2);
+    }
+
+    private void encodeDecodeTest(String testString, File testFile)
     {
         logic = new AppLogic();
+        logic.encode(testString, testFile);
+
+        logic = new AppLogic();
+        String resultString = logic.decode(testFile);
+        Assert.assertTrue("Test string doesn't match the result.", resultString.equals(testString));
     }
-
-    @Test
-    void encode()
-    {
-        logic.encode(testString1, testFile1);
-        logic.encode(testString2, testFile2);
-    }
-
-    // I added 'zz' in front of the function name so that the other test will be run before this one.
-    // Because tests are run alphabetically.
-    @Test
-    void zzdecode()
-    {
-        String resultString1 = logic.decode(testFile1);
-        String resultString2 = logic.decode(testFile2);
-
-        Assert.assertTrue("Test string 1 doesn't match the result.", resultString1.equals(testString1));
-        Assert.assertTrue("Test string 2 doesn't match the result.", resultString2.equals(testString2));
-    }
-
 }

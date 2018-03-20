@@ -34,7 +34,6 @@ public class AppLogic implements ILogic
         bitCodeLookupTable = generateBitCodeLookupTable(codeTree);
 
         BitSet encodedMessage = encodeMessage(bitCodeLookupTable, input);
-        System.out.println(encodedMessage.toString());
         writeToFile(encodedMessage, outputFile);
     }
 
